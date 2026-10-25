@@ -60,3 +60,15 @@ GitHub Pages 仅支持原来的卡片、游戏和静态界面，无法运行 `ap
 开发静态界面使用 `npm run dev`；本地联调 serverless API 需要 Vercel CLI 的 `vercel dev` 和服务端环境变量。`npm run preview` 不运行 AI API。
 
 验证：`npm run build`；后端边界检查：`node --test tests/chat.test.mjs`。自动检查使用模拟 AI 响应，不表示真实 OpenAI 调用已经成功；上线前需要配置真实 API 并在 iPhone/iPad 验证语音权限和声音播放。
+
+### 部署到 Netlify（也支持 AI 后端）
+
+1. 使用 GitHub 登录 Netlify，Import a Git repository → GitHub → 选择 `judy-english-app`。
+2. 选择 `main` 分支，Build command 为 `npm run build`，Publish directory 为 `dist`。仓库的 `netlify.toml` 已配置构建、Node 24、Functions 和 `/api/chat` 转发。
+3. 在项目的 Environment variables 中安全填写 `AI_API_KEY`（OpenAI API 密钥）和 `CHAT_ACCESS_CODE`（自设随机家庭口令）；变量需要对 Functions 运行时可用，不能仅用于 Build。不要使用 `VITE_` 前缀。
+4. 部署后用 Netlify 提供的 HTTPS 地址访问。新增或修改变量后，重新部署。
+5. 点击「和脆宝聊聊天」，由家长输入家庭口令，试发一句 Hello。未配置密钥时会明确提示服务未开通。
+
+Netlify 与 OpenAI 的免费额度和计费各自独立，以各自控制台为准。迁移不影响原 GitHub Pages 的卡片和小游戏；不要把 API 密钥填入网页或发到聊天。
+
+Netlify 适配检查：`node --test tests/*.test.mjs`，使用模拟 AI 响应；真实线上调用和设备语音仍需部署后验证。
